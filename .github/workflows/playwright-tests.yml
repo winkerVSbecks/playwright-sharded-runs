@@ -22,15 +22,11 @@ jobs:
 
       - name: Install Playwright
         run: |
-          yarn playwright install 
-
-      - name: Build
-        run: |
-          yarn run build    
+          npm install playwright
 
       - name: Run tests
         run: |
-          yarn run test:playwright
+          npx playwright test
 
       - name: Publish to Chromatic
         uses: chromaui/action@latest
