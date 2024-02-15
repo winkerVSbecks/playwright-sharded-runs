@@ -22,7 +22,7 @@ jobs:
 
       - name: Install Playwright
         run: |
-          npm install playwright
+          npm init playwright@latest
 
       - name: Run tests
         run: |
