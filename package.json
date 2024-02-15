@@ -1,0 +1,15 @@
+{
+  "name": "playwright-sharded-runs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {},
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@chromatic-com/playwright": "^0.5.5",
+    "@playwright/test": "^1.41.2",
+    "@types/node": "^20.11.19",
+    "chromatic": "^10.9.5"
+  }
+}
