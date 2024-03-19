@@ -1,6 +1,6 @@
 # .github/workflows/chromatic.yml
 
-name: 'Playwright Tests'
+name: 'UI Tests'
 
 on: push
 
@@ -51,6 +51,6 @@ jobs:
       - name: Publish E2E Archives to Chromatic
         uses: chromaui/action@v1
         with:
-          projectToken: ${{ secrets.CHROMATIC_ARCHIVE_PROJECT_TOKEN }}
+          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
           buildScriptName: build-archive-storybook
           playwright: true
