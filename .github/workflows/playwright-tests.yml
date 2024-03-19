@@ -42,7 +42,7 @@ jobs:
 
   chromatic:
     name: Run Chromatic
-    needs: test
+    needs: [install, test]
     runs-on: ubuntu-latest
     steps:
       - name: Download all workflow run artifacts
