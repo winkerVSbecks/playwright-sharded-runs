@@ -1,11 +1,12 @@
 # .github/workflows/chromatic.yml
 
-name: "Playwright Tests"
+name: 'Playwright Tests'
 
 on: push
 
 jobs:
-  test:
+  install:
+    name: Install
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -23,13 +24,35 @@ jobs:
       - name: Install Playwright
         run: |
           npx playwright install --with-deps
-
-      - name: Run tests
+  test:
+    name: Run Playwright
+    needs: install
+    strategy:
+      matrix:
+        shard: [1, 2]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run Playwright tests
         run: |
-          npx playwright test
-
-      - name: Publish to Chromatic
-        uses: chromaui/action@latest
+          npx playwright test --shard=${{ matrix.shard }}/${{ strategy.job-total }}
+      - uses: actions/upload-artifact@v3
+        if: always()
         with:
-          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}          
+          name: playwright-report-${{ matrix.shard }}_${{ strategy.job-total }}
+          path: ./test-results/chromatic-archives
+          retention-days: 30
+
+  chromatic:
+    name: Run Chromatic
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download all workflow run artifacts
+        uses: actions/download-artifact@v3
+
+      - name: Publish E2E Archives to Chromatic
+        uses: chromaui/action@v1
+        with:
+          projectToken: ${{ secrets.CHROMATIC_ARCHIVE_PROJECT_TOKEN }}
+          buildScriptName: build-archive-storybook
           playwright: true
