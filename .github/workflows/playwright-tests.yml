@@ -5,32 +5,25 @@ name: 'UI Tests'
 on: push
 
 jobs:
-  install:
-    name: Install
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-
-      - name: Use Node.js 18.x
-        uses: actions/setup-node@v1
-        with:
-          node-version: 18.x
-
-      - name: Install dependencies
-        uses: bahmutov/npm-install@v1
-
-      - name: Install Playwright
-        run: npx playwright install --with-deps
   test:
     name: Run Playwright
-    needs: install
     strategy:
       matrix:
         shard: [1, 2]
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 18.x
+      - name: Install dependencies
+        uses: bahmutov/npm-install@v1
+
+      - name: Install Playwright
+        run: npx playwright install --with-deps
+
       - name: Run Playwright tests
         run: npx playwright test --shard=${{ matrix.shard }}/${{ strategy.job-total }}
       - uses: actions/upload-artifact@v3
@@ -42,13 +35,22 @@ jobs:
 
   chromatic:
     name: Run Chromatic
-    needs: [install, test]
+    needs: test
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 18.x
+      - name: Install dependencies
+        uses: bahmutov/npm-install@v1
+
       - name: Download all workflow run artifacts
         uses: actions/download-artifact@v3
 
-      - name: Publish E2E Archives to Chromatic
+      - name: Run Chromatic tests
         uses: chromaui/action@v1
         with:
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
