@@ -26,7 +26,7 @@ jobs:
 
       - name: Run Playwright tests
         run: npx playwright test --shard=${{ matrix.shard }}/${{ strategy.job-total }}
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: playwright-report-${{ matrix.shard }}_${{ strategy.job-total }}
@@ -48,11 +48,14 @@ jobs:
         uses: bahmutov/npm-install@v1
 
       - name: Download all workflow run artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
+        with:
+          path: ./test-results/chromatic-archives
+          pattern: playwright-report-*
+          merge-multiple: true
 
       - name: Run Chromatic tests
         uses: chromaui/action@v1
         with:
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
-          buildScriptName: build-archive-storybook
           playwright: true
